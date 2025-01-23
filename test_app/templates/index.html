@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Defect Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .video-container,
+        .screenshot-container {
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: white;
+            padding: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        img {
+            width: 500px; /* 이미지 크기 */
+            height: auto;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 실시간 영상 -->
+    <div class="video-container">
+        <h1>Live Feed</h1>
+        <img id="video-feed" src="/video_feed" alt="Live Video Feed">
+    </div>
+
+    <!-- 최근 스크린샷 -->
+    <div class="screenshot-container">
+        <h1>Screenshot</h1>
+        <img id="screenshot" src="" alt="Screenshot">
+        <div class="result" id="result">Waiting for detection...</div>
+    </div>
+</div>
+
+<script>
+function updateStatus() {
+    fetch('/get_status')
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            const screenshotImg = document.getElementById('screenshot');
+
+            // 상태 업데이트
+            resultDiv.textContent = `Status: ${data.status}, Confidence: ${data.confidence}`;
+            
+            // 스크린샷 URL 업데이트 (캐싱 방지용 타임스탬프 추가)
+            if (data.screenshot_url) {
+                screenshotImg.src = data.screenshot_url + '?t=' + new Date().getTime();
+                screenshotImg.style.display = 'block';
+            } else {
+                screenshotImg.style.display = 'none';
+                resultDiv.textContent += " (No screenshot available)";
+            }
+            
+        })
+        .catch(error => console.error('Error fetching status:', error));
+}
+
+// 매초 상태와 스크린샷 업데이트
+setInterval(updateStatus, 1000);
+</script>
+</body>
+</html>
