@@ -2,7 +2,7 @@ import requests
 from flask import Blueprint, request, jsonify
 
 pipe_route = Blueprint('pipe', __name__)
-FASTAPI_URL = "http://127.0.0.1:8000/predict/"
+FASTAPI_URL = "http://192.168.0.163:8000/predict/"
 
 @pipe_route.route("/", methods=['POST'])
 def predict():
