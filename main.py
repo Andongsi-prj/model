@@ -8,9 +8,40 @@ import numpy as np
 from ultralytics import YOLO
 import traceback
 from fastapi.middleware.cors import CORSMiddleware
+from kafka import KafkaConsumer
+import json
 
 # FastAPI 인스턴스 생성
 main = FastAPI()
+
+# kafka consumer 생성
+KAFKA_BROKER = '192.168.0.163:9092'
+TOPIC_NAME = 'image_topic'
+
+consumer = KafkaConsumer(
+    TOPIC_NAME,
+    bootstrap_servers=[KAFKA_BROKER],
+    group_id='get_image',
+    value_deserializer=lambda x: x.decode('utf-8')  # 바이너리 데이터를 UTF-8로 디코딩
+    )
+
+# kafka에서 받은 data
+for message in consumer:
+    message_value = message.value
+    
+    # JSON 형식으로 변환 시 오류가 발생하지 않도록 처리
+    try:
+        data = json.loads(message_value)
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        continue  # 잘못된 JSON은 건너뜀
+    
+    # 이미지 데이터와 plt_number를 추출
+    image_data = data.get('encoded_image')   # image
+    plt_number = data.get('plt_number')      # id
+    print(f"consumer에서 받은 데이터 : {plt_number}")
+    
+
 
 # YOLOv8 모델 로드
 model = YOLO("best.pt")
