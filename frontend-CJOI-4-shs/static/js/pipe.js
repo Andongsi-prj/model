@@ -1,8 +1,6 @@
 $(document).ready(function () {
     const BELT = $(".belt");
-    let isProcessing = false;
 
-    // 랜덤 이미지 로드 및 컨베이어 벨트 시작
     fetch('/api/list-images')
         .then(res => res.json())
         .then(images => {
@@ -41,7 +39,7 @@ $(document).ready(function () {
     
     async function processImage($img) {
         try {
-            const base64Data = $img.attr('src').split('base64,')[1]; // .attr() 사용 가능
+            const base64Data = $img.attr('src').split('base64,')[1];
             const res = await fetch('/api/pipe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -71,9 +69,6 @@ $(document).ready(function () {
     function handleDefect($img) {
         const belt = $(".belt"); // 컨베이어 벨트 요소
     
-        // 애니메이션 일시 정지
-        belt.css("animation-play-state", "paused");
-    
         // SweetAlert2 경고창 표시
         Swal.fire({
             icon: "warning",
@@ -85,14 +80,7 @@ $(document).ready(function () {
             customClass: {
                 timerProgressBar: "timer-bar",
             },
-        }).then(() => {
-            // 경고창 닫힌 후 애니메이션 재개
-            resumeConveyor(belt);
         });
     }
-    
-    function resumeConveyor(belt) {
-        belt.css("animation-play-state", "running");
-    }    
 
 });
