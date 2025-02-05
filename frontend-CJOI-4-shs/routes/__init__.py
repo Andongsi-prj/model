@@ -11,7 +11,7 @@ blueprints = [
    (data_route,"/api/data"),
    (login_route,"/api/login"),
    (loginck_route,"/api/loginck"),
-   (images_route,"/api/list-images")
+   (images_route,"/api/images")
 ]
 
 def register_blueprints(app):

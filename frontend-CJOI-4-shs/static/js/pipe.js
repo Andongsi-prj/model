@@ -1,42 +1,79 @@
 $(document).ready(function () {
     const BELT = $(".belt");
 
-    fetch('/api/list-images')
-        .then(res => res.json())
-        .then(images => {
-            images.forEach(base64Data => {
-                BELT.append(`<img src="${base64Data}" class="belt-img">`);
-            });
-            startConveyor();
+    //////////////////////////////////////////////
+
+    function loadAndAnimateImage() {
+        fetch('/api/images', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.encoded_image) {
+                    const $img = $(`<img src="${data.encoded_image}" />`);
+                    BELT.append($img);
+                    animateImage($img);
+                } else {
+                    console.log("No images available.");
+                }
+            })
+            .catch(err => console.error("Error loading image:", err));
+    }
+
+    //////////////////////////////////////////////
+
+    function animateImage($img) {
+        $img.css({
+            position: "absolute",
+            right: "-800px", // 이미지가 화면 오른쪽 바깥에서 시작
+            transition: "right 10s linear" // 10초 동안 이동
         });
 
-    function startConveyor() {
-        BELT.css('animation', 'moveBelt 30s linear infinite');
-        detectPosition();
+        // Start animation
+        setTimeout(() => {
+            $img.css("right", "100%"); // 화면 왼쪽으로 이동
+        }, 100);
+
+        // Remove image after animation
+        setTimeout(() => {
+            $img.remove(); // 애니메이션 종료 후 이미지 제거
+        }, 10000); // 10초 후 제거
     }
+
+
+    //////////////////////////////////////////////
+
+    function continuouslyLoadImages() {
+        setInterval(() => {
+            loadAndAnimateImage(); // 주기적으로 이미지를 로드하고 애니메이션 시작
+        }, 5000); // 5초마다 새로운 이미지 로드
+    }
+
+    continuouslyLoadImages();
+
+    detectPosition();
+
+    //////////////////////////////////////////////
 
     function detectPosition() {
         const detectionZone = document.querySelector('.detection-zone');
         const zoneLeft = detectionZone.getBoundingClientRect().left;
     
         requestAnimationFrame(() => {
-            // jQuery의 .each()를 사용하여 순회
             $('.belt img').each(function () {
-                const $img = $(this); // DOM 객체를 jQuery로 래핑
-                const imgRect = $img[0].getBoundingClientRect(); // DOM 메서드 호출
+                const $img = $(this);
+                const imgRect = $img[0].getBoundingClientRect();
                 const imgCenter = imgRect.left + imgRect.width / 2;
     
-                // 이미지가 판별 구역에 도달했는지 확인
                 if (Math.abs(imgCenter - zoneLeft) < 5 && !$img.data('processed')) {
-                    processImage($img); // $img는 이제 jQuery 객체
-                    $img.data('processed', true); // 중복 처리 방지
+                    processImage($img);
+                    $img.data('processed', true);
                 }
             });
-    
-            detectPosition(); // 지속적으로 감시
+            detectPosition();
         });
     }
-    
+
+    //////////////////////////////////////////////
+
     async function processImage($img) {
         try {
             const base64Data = $img.attr('src').split('base64,')[1];
@@ -54,33 +91,25 @@ $(document).ready(function () {
                 throw new Error('Invalid server response');
             }
     
-            // 응답 이미지 업데이트
             $img.attr('src', `data:image/png;base64,${result.annotated_image}`);
     
-            // Defect 감지
             if (result.predictions.some((p) => p.label === 'Defect')) {
-                handleDefect($img);
+                Swal.fire({
+                    icon: "warning",
+                    title: "불량품 감지!",
+                    text: "ㅇㅇㅇ",
+                    confirmButtonText: "확인",
+                    timer: 3000,
+                    timerProgressBar: true,
+                    customClass: {
+                        timerProgressBar: "timer-bar",
+                    }
+                });
             }
         } catch (error) {
             console.error('처리 실패:', error);
         }
     }
 
-    function handleDefect($img) {
-        const belt = $(".belt"); // 컨베이어 벨트 요소
-    
-        // SweetAlert2 경고창 표시
-        Swal.fire({
-            icon: "warning",
-            title: "불량품 감지!",
-            text: "컨베이어 벨트를 멈춥니다.",
-            confirmButtonText: "확인",
-            timer: 3000,
-            timerProgressBar: true,
-            customClass: {
-                timerProgressBar: "timer-bar",
-            },
-        });
-    }
-
+    //////////////////////////////////////////////
 });

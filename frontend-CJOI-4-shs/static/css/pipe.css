@@ -86,20 +86,14 @@ header .icons{
     width: max-content;
     height: 100%;
     animation: moveBelt 30s linear infinite;
-    animation-play-state: running; /* 기본값 */
-}
-
-.belt.paused {
-    animation-play-state: paused; /* 애니메이션 일시 정지 */
+    animation-play-state: running;
 }
 
 @keyframes moveBelt {
-    from { transform: translateX(30%); } /* 오른쪽 끝에서 시작 */
-    to { transform: translateX(-100%); } /* 왼쪽 끝으로 이동 */
+    from { transform: translateX(30%); }
+    to { transform: translateX(-100%); }
 }
 
-
-/* 제품 이미지 스타일 */
 .belt img {
     width: 200px;
     height: 200px;
@@ -109,7 +103,6 @@ header .icons{
     z-index: 3;
 }
 
-/* 판별 구역 */
 .detection-zone {
     position: absolute;
     left: 400px;
@@ -119,11 +112,6 @@ header .icons{
     background-color: rgba(255, 0, 0, 0.5);
 }
 
-/* 경고창 타이머 바 */
 .timer-bar {
     background: #ff0000 !important;
-}
-
-.belt.paused {
-    animation-play-state: paused;
 }
