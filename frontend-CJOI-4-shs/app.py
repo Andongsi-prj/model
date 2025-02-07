@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask
 from routes import register_blueprints
 
 app = Flask(__name__)

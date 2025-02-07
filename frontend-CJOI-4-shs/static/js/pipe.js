@@ -23,7 +23,7 @@ $(document).ready(function () {
     function animateImage($img) {
         $img.css({
             position: "absolute",
-            right: "-800px", // 이미지가 화면 오른쪽 바깥에서 시작
+            right: "-1000px", // 이미지가 화면 오른쪽 바깥에서 시작
             transition: "right 10s linear" // 10초 동안 이동
         });
 
@@ -35,7 +35,7 @@ $(document).ready(function () {
         // Remove image after animation
         setTimeout(() => {
             $img.remove(); // 애니메이션 종료 후 이미지 제거
-        }, 10000); // 10초 후 제거
+        }, 15000); // 10초 후 제거
     }
 
 
@@ -93,17 +93,27 @@ $(document).ready(function () {
     
             $img.attr('src', `data:image/png;base64,${result.annotated_image}`);
     
-            if (result.predictions.some((p) => p.label === 'Defect')) {
+            const defect = result.predictions.find((p) => p.label === 'Defect');
+            if (defect) {
                 Swal.fire({
                     icon: "warning",
                     title: "불량품 감지!",
-                    text: "ㅇㅇㅇ",
+                    text: "알림을 전송합니다.",
                     confirmButtonText: "확인",
                     timer: 3000,
                     timerProgressBar: true,
-                    customClass: {
-                        timerProgressBar: "timer-bar",
-                    }
+                    customClass: { timerProgressBar: "timer-bar" },
+                });
+
+                // Slack 알림 전송
+                await fetch('/api/slack', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        image_base64: result.annotated_image,
+                        label: defect.label,
+                        confidence: defect.confidence,
+                    }),
                 });
             }
         } catch (error) {

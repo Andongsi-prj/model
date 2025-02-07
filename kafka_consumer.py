@@ -4,7 +4,7 @@ import base64
 
 # Kafka Consumer 설정
 consumer = KafkaConsumer(
-    'test_topic',  # Producer가 데이터를 보낸 Topic 이름
+    'anggimojji_topic',  # Producer가 데이터를 보낸 Topic 이름
     bootstrap_servers=['192.168.0.163:9092'],  # Kafka 브로커 주소
     auto_offset_reset='earliest',  # 처음부터 메시지를 읽음
     enable_auto_commit=True,  # 자동으로 오프셋 커밋

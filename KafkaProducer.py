@@ -59,7 +59,7 @@ def fetch_and_send_images():
                             'encoded_image': encoded_image
                         }      
                              
-                        producer.send('test11_topic', value=message)
+                        producer.send('repair_topic', value=message)
                         print(f"sent Image id: {plt_number}")
                         last_img_id = plt_number  # 처리된 이미지 아이디 업데이트
                 else:
