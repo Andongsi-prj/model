@@ -3,7 +3,7 @@ import requests
 import sys
 
 # 슬랙 API 토큰, 업로드할 채널 ID, 스레드 ts (스레드에 게시할 경우)를 환경에 맞게 설정하세요.
-slack_token = "xoxb-8327137432257-8408801187235-HnctqtlymIumAPG3ccqqBRN3"
+slack_token = ""
 channel_id = "C089X7RJE0Y"
 thread_ts = ""  # 스레드에 게시하지 않으려면 빈 문자열로 두세요.
 
