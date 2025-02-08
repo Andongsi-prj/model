@@ -1,0 +1,12 @@
+train: C:/Users/gh159/Desktop/project/mydataset/train/images
+val: C:/Users/gh159/Desktop/project/mydataset/valid/images
+
+nc: 4
+names: ['Burn', 'Defect', 'Hole', 'Normal']
+
+roboflow:
+  workspace: labeling01
+  project: my-first-project-frpea
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/labeling01/my-first-project-frpea/dataset/1
