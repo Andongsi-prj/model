@@ -4,7 +4,7 @@ import base64
 
 slack_route = Blueprint('slack', __name__)
 
-SLACK_TOKEN = "xoxb-8327137432257-8408801187235-HnctqtlymIumAPG3ccqqBRN3"
+SLACK_TOKEN = ""
 SLACK_CHANNEL = "C089X7RJE0Y"
 thread_ts = ""
 
