@@ -5,7 +5,7 @@ from PIL import Image
 from io import BytesIO
 
 # FastAPI 서버 URL 설정
-FASTAPI_URL = "http://192.168.0.163:8000/predict/"
+FASTAPI_URL = "http://192.168.0.163:8001/predict/"
 
 # Streamlit 앱 시작
 st.title("YOLOv8 객체 탐지")
